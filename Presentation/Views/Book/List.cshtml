@@ -1,0 +1,80 @@
+﻿@using Business
+@using Data.Entities
+@model PagedList<Book>
+
+@{
+    int maxPage = Model.TotalPages;
+    int pageSize = Model.PageSize;
+    int currentPage = Model.CurrentPage;
+    List<int> sizeList = new List<int>() { 10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000 };
+}
+
+<div>
+    Page Size
+    @foreach (int size in sizeList)
+    {
+        if (maxPage * pageSize > size)
+        {
+            <a asp-action="List" asp-all-route-data='new Dictionary<string,string>(){
+                { "PageNumber", currentPage.ToString()},
+                { "PageSize", size.ToString()}
+             }' class="" style="margin-top:5%">@size</a>
+        }
+    }
+</div>
+
+<table class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Writer
+            </th>
+            <th>
+                Added Time
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td>
+                    @obj.Id
+                </td>
+                <td>
+                    @obj.Title
+                </td>
+                <td>
+                    @obj.Writer
+                </td>
+                <td>
+                    @obj.AddedTime
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="List" asp-all-route-data='new Dictionary<string,string>(){
+            { "PageNumber", Convert.ToString(currentPage == 1 ? currentPage:currentPage-1)},
+            { "PageSize", pageSize.ToString()}
+    }'><</a>
+
+    @for (int i = 1; i <= maxPage; i++)
+    {
+        <a asp-action="List" asp-all-route-data='new Dictionary<string,string>(){
+            { "PageNumber", i.ToString()},
+            { "PageSize", pageSize.ToString()}
+        }'>@i</a>
+    }
+    <a asp-action="List" asp-all-route-data='new Dictionary<string,string>(){
+            { "PageNumber", Convert.ToString(currentPage == maxPage ? currentPage:currentPage+1)},
+            { "PageSize", pageSize.ToString()}
+    }'>></a>
+</div>
